@@ -28,7 +28,7 @@ game_data = {
         {
             "title": "Rapidez Mental",
             "description": "Juegos de pensamiento rápido que mejoran la agilidad mental y el tiempo de reacción.",
-            "icon": "lightning-bolt",
+            "icon": "bolt-lightning",
             "age_group": "8-12 años"
         }
     ],
@@ -36,13 +36,13 @@ game_data = {
         {
             "name": "Martha",
             "role": "Madre",
-            "text": "Mi hijo de 8 años ama Q-XAL, Su enfoque ha mejorado significativamente desde que comenzó a jugar.",
+            "text": "Mi hijo de 8 años ama Kansah, Su enfoque ha mejorado significativamente desde que comenzó a jugar.",
             "rating": 5
         },
         {
             "name": "Eliseo",
             "role": "Jefe de plaza",
-            "text": "Recomiendo Q-XAL a todos mis punteros. Siempre veo mejoras en su atención y memoria.",
+            "text": "Recomiendo Kansah a todos mis punteros. Siempre veo mejoras en su atención y memoria.",
             "rating": 5
         }
     ],
