@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section position-relative">
+    <div class="floating-shapes"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    ¡Mejora tus <span class="text-warning">habilidades</span> con Q-XAL!
+                </h1>
+                <p class="lead mb-4">
+                    Diversion y juegos interactivos diseñados por expertos en educación para mejorar las habilidades cognitivas
+                    de los niños de 6 a 12 años. ¡El aprendizaje nunca ha sido tan emocionante!
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#download" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Juega ahora!
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Ver mas
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <div class="position-relative">
+                        <img src="https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=Q-XAL+Game" 
+                             alt="Q-XAL Game Screenshot" class="img-fluid rounded-3 shadow-lg">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                            <button class="btn btn-light btn-lg rounded-circle" style="width: 80px; height: 80px;">
+                                <i class="fas fa-play text-primary" style="font-size: 2rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-3">
+                <div class="h2 fw-bold">{{ data.stats.players }}</div>
+                <p class="mb-0">Jugadores felices</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="h2 fw-bold">{{ data.stats.schools }}</div>
+                <p class="mb-0">Las escuelas usan Q-XAL</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="h2 fw-bold">{{ data.stats.countries }}</div>
+                <p class="mb-0">Paises alrededor del mundo</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">¿Por que aman Q-XAL?</h2>
+            <p class="lead text-muted">Juegos diseñados científicamente que hacen que el aprendizaje sea divertido y efectivo</p>
+        </div>
+        <div class="row g-4">
+            {% for feature in data.features %}
+            <div class="col-lg-3 col-md-6">
+                <div class="card feature-card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-{{ feature.icon }} text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">{{ feature.title }}</h5>
+                        <p class="card-text">{{ feature.description }}</p>
+                        <span class="badge bg-light text-dark">{{ feature.age_group }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">¿Como funciona Q-XAL?</h2>
+            <p class="lead text-muted">Tres simples pasos para la mejora cognitiva</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem; font-weight: bold;">1</div>
+                </div>
+                <h4>Elige tu aventura</h4>
+                <p>Selecciona entre juegos de memoria, rompecabezas, atención o velocidad según los intereses de tu hijo.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem; font-weight: bold;">2</div>
+                </div>
+                <h4>Jugar y Aprender</h4>
+                <p>Interactúa con minijuegos coloridos y atractivos diseñados por expertos en desarrollo infantil.</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px; font-size: 2rem; font-weight: bold;">3</div>
+                </div>
+                <h4>Seguimiento del Progreso</h4>
+                <p>Observa cómo mejoran las habilidades cognitivas de tu hijo con informes de progreso detallados para padres.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Lo que dicen padres y maestros</h2>
+        </div>
+        <div class="row g-4">
+            {% for testimonial in data.testimonials %}
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="mb-3">
+                        {% for i in range(testimonial.rating) %}
+                        <i class="fas fa-star text-warning"></i>
+                        {% endfor %}
+                    </div>
+                    <p class="mb-3">"{{ testimonial.text }}"</p>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" 
+                             style="width: 50px; height: 50px;">
+                            {{ testimonial.name[0] }}
+                        </div>
+                        <div>
+                            <div class="fw-bold">{{ testimonial.name }}</div>
+                            <small class="text-muted">{{ testimonial.role }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Signup -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-3">¡Mantente Actualizado!</h3>
+                <p class="mb-0">Recibe las últimas novedades sobre nuevos juegos y características.</p>
+            </div>
+            <div class="col-lg-6">
+                <form id="newsletterForm" class="d-flex gap-2">
+                    <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico" required>
+                    <button type="submit" class="btn btn-light">Suscribirse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Download Section -->
+<section id="download" class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="display-5 fw-bold mb-4">¿Listo para mejorar las habilidades de tu hijo?</h2>
+        <p class="lead mb-4">Disponible en todas las plataformas</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="#" class="btn btn-dark btn-lg">
+                <i class="fab fa-apple me-2"></i>App Store
+            </a>
+            <a href="#" class="btn btn-success btn-lg">
+                <i class="fab fa-google-play me-2"></i>Google Play
+            </a>
+            <a href="#" class="btn btn-primary btn-lg">
+                <i class="fas fa-desktop me-2"></i>Descargar para PC
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    
+    fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email: email})
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.mensaje);
+        this.reset();
+    });
+});
+</script>
+{% endblock %}
