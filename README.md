@@ -1,2 +1,2 @@
 # QxalAcademy_Website
-Website for the Q-XAL Education Game made by the team Q-XAL, Make it with bootstrap and python
+Website for Qxal Academy made by the team Qxal, Make it with Bootstrap and Flask with SQL Server
