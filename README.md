@@ -31,7 +31,7 @@ Sitio web para Qxal Academy desarrollado por el equipo Qxal. El proyecto utiliza
 
 4. Ejecuta la aplicación:
    ```bash
-   flask run
+   python app.py
    ```
 
 ## Uso
