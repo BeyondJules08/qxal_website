@@ -11,8 +11,8 @@ Sitio web para Qxal Academy desarrollado por el equipo Qxal. El proyecto utiliza
 
 ## Requisitos previos
 
-- Python 3.13
-- SQL Server
+- Python 3.13 o superior
+- [SQL Server](https://godotengine.org/](https://www.microsoft.com/es-es/sql-server/sql-server-downloads ) (versión recomendada: 2022)
 
 ## Instalación
 
