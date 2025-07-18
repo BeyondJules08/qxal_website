@@ -1,81 +1,147 @@
 from flask import Flask, render_template, request, jsonify
+import pyodbc
 import os
 from dotenv import load_dotenv
 import logging
+from contextlib import contextmanager
 
 # Cargar variables de entorno
 load_dotenv()
-app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'qxal_secret_key_2025')
 
-# Configurar logging
+# Configuración de logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-game_data = {
-    "Caracteristicas": [
-        {
-            "title": "Memoria",
-            "description": "Juegos de memoria divertidos que ayudan a los niños a recordar patrones, secuencias e información importante.",
-            "icon": "brain",
-            "age_group": "6-12 años"
-        },
-        {
-            "title": "Resolución de Problemas",
-            "description": "Juegos que desarrollan el pensamiento lógico y las habilidades analíticas.",
-            "icon": "puzzle-piece",
-            "age_group": "7-12 años"
-        },
-        {
-            "title": "Entrenamiento de atención",
-            "description": "Actividades que mejoran la concentración y reducen las distracciones.",
-            "icon": "eye",
-            "age_group": "6-11 años"
-        },
-        {
-            "title": "Rapidez Mental",
-            "description": "Juegos de pensamiento rápido que mejoran la agilidad mental y el tiempo de reacción.",
-            "icon": "bolt-lightning",
-            "age_group": "8-12 años"
-        }
-    ],
-    "Testimonios": [
-        {
-            "name": "Martha",
-            "role": "Madre",
-            "text": "Mi hijo de 8 años ama Qxal Academy Su enfoque ha mejorado significativamente desde que comenzó a jugar.",
-            "rating": 5
-        },
-        {
-            "name": "Eliseo",
-            "role": "Jefe de plaza",
-            "text": "Recomiendo Qxal Academy a todos mis punteros. Siempre veo mejoras en su atención y memoria.",
-            "rating": 5
-        }
-    ],
-    "Estadisticas": {
-        "jugadores": "1000+",
-        "escuelas": "15+",
-        "paises": "2+"
-    }
+app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'qxal_secret_key_2025')
+
+# Configuración de SQL Server
+SQL_SERVER_CONFIG = {
+    'server': os.getenv('DB_SERVER', 'localhost'),
+    'database': os.getenv('DB_DATABASE', 'qxal'),
+    'username': os.getenv('DB_USERNAME', ''),
+    'password': os.getenv('DB_PASSWORD', ''),
+    'driver': os.getenv('DB_DRIVER', '{ODBC Driver 17 for SQL Server}')
 }
+
+@contextmanager
+def get_db_connection():
+    """Context manager para conexiones a SQL Server"""
+    conn = None
+    try:
+        # Construir cadena de conexión según si hay credenciales o no
+        if SQL_SERVER_CONFIG['username'] and SQL_SERVER_CONFIG['password']:
+            # Autenticación SQL Server
+            connection_string = f"""DRIVER={SQL_SERVER_CONFIG['driver']};
+                                  SERVER={SQL_SERVER_CONFIG['server']};
+                                  DATABASE={SQL_SERVER_CONFIG['database']};
+                                  UID={SQL_SERVER_CONFIG['username']};
+                                  PWD={SQL_SERVER_CONFIG['password']};"""
+        else:
+            # Autenticación Windows
+            connection_string = f"""DRIVER={SQL_SERVER_CONFIG['driver']};
+                                  SERVER={SQL_SERVER_CONFIG['server']};
+                                  DATABASE={SQL_SERVER_CONFIG['database']};
+                                  Trusted_Connection=yes;"""
+        
+        logger.info(f"Intentando conectar a SQL Server: {SQL_SERVER_CONFIG['server']}")
+        conn = pyodbc.connect(connection_string)
+        logger.info("Conexión a SQL Server exitosa")
+        yield conn
+    except Exception as e:
+        logger.error(f"Error de conexión a SQL Server: {e}")
+        if conn:
+            conn.rollback()
+        raise
+    finally:
+        if conn:
+            conn.close()
+
+def get_caracteristicas_from_db():
+    """Obtiene las características desde SQL Server"""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, title, description, icon, age_group FROM caracteristicas ORDER BY id')
+            rows = cursor.fetchall()
+            
+            caracteristicas = []
+            for row in rows:
+                caracteristicas.append({
+                    'id': row[0],
+                    'title': row[1],
+                    'description': row[2],
+                    'icon': row[3],
+                    'age_group': row[4]
+                })
+            
+            logger.info(f"Características obtenidas desde SQL Server: {len(caracteristicas)}")
+            return caracteristicas
+            
+    except Exception as e:
+        logger.error(f"Error al obtener características: {e}")
+        return []
+
+def get_testimonios_from_db():
+    """Obtiene los testimonios desde SQL Server"""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name, role, text, rating FROM testimonios ORDER BY id')
+            rows = cursor.fetchall()
+            
+            testimonios = []
+            for row in rows:
+                testimonios.append({
+                    'id': row[0],
+                    'name': row[1],
+                    'role': row[2],
+                    'text': row[3],
+                    'rating': row[4]
+                })
+            
+            logger.info(f"Testimonios obtenidos desde SQL Server: {len(testimonios)}")
+            return testimonios
+            
+    except Exception as e:
+        logger.error(f"Error al obtener testimonios: {e}")
+        return []
+
+def get_estadisticas_from_db():
+    """Obtiene las estadísticas desde SQL Server"""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT jugadores, escuelas, paises FROM estadisticas')
+            row = cursor.fetchone()
+            
+            if row:
+                estadisticas = {
+                    'jugadores': row[0],
+                    'escuelas': row[1],
+                    'paises': row[2]
+                }
+                logger.info("Estadísticas obtenidas desde SQL Server")
+                return estadisticas
+            else:
+                return {'jugadores': 0, 'escuelas': 0, 'paises': 0}
+            
+    except Exception as e:
+        logger.error(f"Error al obtener estadísticas: {e}")
+        return {'jugadores': 0, 'escuelas': 0, 'paises': 0}
 
 @app.route('/')
 def home():
     data = {
-        "features": game_data["Caracteristicas"],
-        "testimonials": game_data["Testimonios"],
-        "stats": {
-            "players": game_data["Estadisticas"]["jugadores"],
-            "schools": game_data["Estadisticas"]["escuelas"],
-            "countries": game_data["Estadisticas"]["paises"]
-        }
+        "features": get_caracteristicas_from_db(),
+        "testimonials": get_testimonios_from_db(),
+        "stats": get_estadisticas_from_db()
     }
     return render_template('index.html', data=data)
 
 @app.route('/Caracteristicas')
 def features():
-    return render_template('features.html', features=game_data['Caracteristicas'])
+    return render_template('features.html', features=get_caracteristicas_from_db())
 
 @app.route('/Acerca de')
 def about():
@@ -88,6 +154,59 @@ def contact():
         # Conectarlo con la base de datos
         return jsonify({"Estado": "Exitoso", "mensaje": "¡Gracias por tu mensaje!"})
     return render_template('contact.html')
+
+@app.route('/api/caracteristicas', methods=['GET'])
+def api_caracteristicas():
+    """API endpoint para obtener características"""
+    try:
+        caracteristicas = get_caracteristicas_from_db()
+        return jsonify({
+            'success': True,
+            'data': caracteristicas,
+            'count': len(caracteristicas)
+        })
+    except Exception as e:
+        logger.error(f"Error en API de características: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al obtener características',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/testimonios', methods=['GET'])
+def api_testimonios():
+    """API endpoint para obtener testimonios"""
+    try:
+        testimonios = get_testimonios_from_db()
+        return jsonify({
+            'success': True,
+            'data': testimonios,
+            'count': len(testimonios)
+        })
+    except Exception as e:
+        logger.error(f"Error en API de testimonios: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al obtener testimonios',
+            'message': str(e)
+        }), 500
+
+@app.route('/api/estadisticas', methods=['GET'])
+def api_estadisticas():
+    """API endpoint para obtener estadísticas"""
+    try:
+        estadisticas = get_estadisticas_from_db()
+        return jsonify({
+            'success': True,
+            'data': estadisticas
+        })
+    except Exception as e:
+        logger.error(f"Error en API de estadísticas: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Error al obtener estadísticas',
+            'message': str(e)
+        }), 500
 
 @app.route('/api/newsletter', methods=['POST'])
 def newsletter_signup():
@@ -105,6 +224,7 @@ if __name__ == '__main__':
             host='0.0.0.0',
             port=int(os.getenv('FLASK_PORT', 5000))
         )
+        
     except Exception as e:
         logger.error(f"Error al iniciar la aplicación: {e}")
         print(f"Error crítico: {e}")
