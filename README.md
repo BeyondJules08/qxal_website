@@ -1,6 +1,6 @@
-# Qxal Academy (Website)
+# Qxal (Website)
 
-Sitio web para Qxal Academy desarrollado por el equipo Qxal. El proyecto utiliza Bootstrap para el diseño de la interfaz, Flask como framework backend en Python y SQL Server como base de datos.
+Sitio web para Qxal desarrollado por el equipo Qxal. El proyecto utiliza Bootstrap para el diseño de la interfaz, Flask como framework backend en Python y SQL Server como base de datos.
 
 ## Características
 
