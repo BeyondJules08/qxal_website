@@ -18,8 +18,8 @@ Sitio web para Qxal desarrollado por el equipo Qxal. El proyecto utiliza Bootstr
 
 1. Clona este repositorio:
    ```bash
-   git clone https://github.com/BeyondJules08/QxalAcademy_Website.git
-   cd QxalAcademy_Website
+   git clone https://github.com/BeyondJules08/qxal_website.git
+   cd qxal_website
    ```
 
 2. Instala las dependencias:
@@ -27,7 +27,7 @@ Sitio web para Qxal desarrollado por el equipo Qxal. El proyecto utiliza Bootstr
    pip install -r requirements.txt
    ```
 
-3. Configura la conexión a la base de datos SQL Server en el archivo de configuración (por ejemplo, `config.py`).
+3. Configura la conexión a la base de datos SQL Server en el archivo de configuración (`.env` y `app.py`).
 
 4. Ejecuta la aplicación:
    ```bash
