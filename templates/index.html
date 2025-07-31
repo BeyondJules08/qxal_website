@@ -193,6 +193,12 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
     e.preventDefault();
     const email = this.querySelector('input[type="email"]').value;
     
+    // Deshabilitar botón mientras se procesa
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+    
     fetch('/api/newsletter', {
         method: 'POST',
         headers: {
@@ -202,8 +208,23 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.mensaje);
-        this.reset();
+        if (data.Estado === 'Exitoso') {
+            alert(data.mensaje);
+            this.reset();
+        } else if (data.Estado === 'Info') {
+            alert(data.mensaje);
+        } else {
+            alert(data.mensaje);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar la suscripción. Por favor, intenta de nuevo.');
+    })
+    .finally(() => {
+        // Rehabilitar botón
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
     });
 });
 </script>
