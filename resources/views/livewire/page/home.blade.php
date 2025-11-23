@@ -66,21 +66,22 @@
             </div>
             <div class="row g-4">
                 @forelse ($caracteristicas as $caracteristica)
-                <div class="col-lg-3 col-md-6">
-                <div class="card feature-card h-100 text-center p-4">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <i class="fas fa-{{ $caracteristica->icon }} text-primary" style="font-size: 3rem;"></i>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card feature-card h-100 text-center p-4">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <i class="fas fa-{{ $caracteristica->icon }} text-primary"
+                                        style="font-size: 3rem;"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">{{ $caracteristica->title }}</h5>
+                                <p class="card-text">{{ $caracteristica->description }}</p>
+                                <span class="badge bg-light text-dark">{{ $caracteristica->age_group }}</span>
+                            </div>
                         </div>
-                        <h5 class="card-title fw-bold">{{ $caracteristica->title }}</h5>
-                        <p class="card-text">{{ $caracteristica->description }}</p>
-                        <span class="badge bg-light text-dark">{{ $caracteristica->age_group }}</span>
                     </div>
-                </div>
-            </div>
 
                 @empty
-                <p class="text-center">No hay características disponibles en este momento.</p>
+                    <p class="text-center">No hay características disponibles en este momento.</p>
                 @endforelse
             </div>
         </div>
@@ -123,44 +124,44 @@
             </div>
         </div>
     </section>
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">Lo que dicen padres y maestros</h2>
-        </div>
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Lo que dicen padres y maestros</h2>
+            </div>
 
-        <div class="row g-4">
-            @forelse ($testimonios as $testimonio)
-                <div class="col-md-6">
-                    <div class="testimonial-card">
-                        <div class="mb-3">
-                            {{-- Estrellas según rating --}}
-                            @for ($i = 0; $i < $testimonio->rating; $i++)
-                                <i class="fas fa-star text-warning"></i>
-                            @endfor
-                        </div>
-
-                        <p class="mb-3">"{{ $testimonio->text }}"</p>
-
-                        <div class="d-flex align-items-center">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                {{ strtoupper(substr($testimonio->name, 0, 1)) }}
+            <div class="row g-4">
+                @forelse ($testimonios as $testimonio)
+                    <div class="col-md-6">
+                        <div class="testimonial-card">
+                            <div class="mb-3">
+                                {{-- Estrellas según rating --}}
+                                @for ($i = 0; $i < $testimonio->rating; $i++)
+                                    <i class="fas fa-star text-warning"></i>
+                                @endfor
                             </div>
 
-                            <div>
-                                <div class="fw-bold">{{ $testimonio->name }}</div>
-                                <small class="text-muted">{{ $testimonio->role }}</small>
+                            <p class="mb-3">"{{ $testimonio->text }}"</p>
+
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                    style="width: 50px; height: 50px;">
+                                    {{ strtoupper(substr($testimonio->name, 0, 1)) }}
+                                </div>
+
+                                <div>
+                                    <div class="fw-bold">{{ $testimonio->name }}</div>
+                                    <small class="text-muted">{{ $testimonio->role }}</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <p class="text-center">No hay testimonios disponibles en este momento.</p>
-            @endforelse
+                @empty
+                    <p class="text-center">No hay testimonios disponibles en este momento.</p>
+                @endforelse
+            </div>
         </div>
-    </div>
-</section>
+    </section>
     <section class="py-5 bg-primary text-white">
         <div class="container">
             <div class="row align-items-center">
@@ -170,7 +171,8 @@
                 </div>
                 <div class="col-lg-6">
                     <form id="newsletterForm" class="d-flex gap-2">
-                        <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico" required>
+                        <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico"
+                            required>
                         <button type="submit" class="btn btn-light">Suscribirse</button>
                     </form>
                 </div>
