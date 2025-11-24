@@ -10,7 +10,7 @@
                         <i class="fas fa-users fa-2x"></i>
                     </div>
                     <div>
-                        <h6 class="text-muted mb-1">Jugadores Felices</h6>
+                        <h6 class="text-muted mb-1">Personas beneficiadas</h6>
                         <h3 class="fw-bold mb-0">{{ number_format($stats->jugadores) }}</h3>
                     </div>
                 </div>

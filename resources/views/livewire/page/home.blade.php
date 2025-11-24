@@ -42,7 +42,7 @@
             <div class="row text-center">
                 <div class="col-md-4 mb-3">
                     <div class="h2 fw-bold">{{ $estadisticas->jugadores }}</div>
-                    <p class="mb-0">Jugadores felices</p>
+                    <p class="mb-0">Personas beneficiadas</p>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="h2 fw-bold">{{ $estadisticas->escuelas }}</div>
