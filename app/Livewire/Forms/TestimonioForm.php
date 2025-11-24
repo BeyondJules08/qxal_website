@@ -86,6 +86,16 @@ class TestimonioForm extends Form
             'rating' => $rating,
         ]);
 
+        if ($this->rating >= 4) {
+            $stats = \App\Models\Estadistica::firstOrCreate([], [
+                'jugadores' => 0,
+                'escuelas' => 0,
+                'paises' => 0,
+            ]);
+            
+            $stats->increment('jugadores');
+        }
+
         $this->reset();
     }
 }

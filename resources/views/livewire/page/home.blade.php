@@ -13,7 +13,7 @@
                         de los niños de 6 a 12 años. ¡El aprendizaje nunca ha sido tan emocionante!
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
-                        <a href="#download" class="btn btn-primary btn-lg">
+                        <a href="{{ route('game.download') }}" class="btn btn-primary btn-lg">
                             <i class="fas fa-play me-2"></i>Juega ahora!
                         </a>
                         <a href="#features" class="btn btn-outline-light btn-lg">
@@ -42,7 +42,7 @@
             <div class="row text-center">
                 <div class="col-md-4 mb-3">
                     <div class="h2 fw-bold">{{ $estadisticas->jugadores }}</div>
-                    <p class="mb-0">Jugadores felices</p>
+                    <p class="mb-0">Personas beneficiadas</p>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="h2 fw-bold">{{ $estadisticas->escuelas }}</div>
@@ -70,8 +70,7 @@
                         <div class="card feature-card h-100 text-center p-4">
                             <div class="card-body">
                                 <div class="mb-3">
-                                    <i class="fas fa-{{ $caracteristica->icon }} text-primary"
-                                        style="font-size: 3rem;"></i>
+                                    <i class="fas fa-{{ $caracteristica->icon }} text-primary" style="font-size: 3rem;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold">{{ $caracteristica->title }}</h5>
                                 <p class="card-text">{{ $caracteristica->description }}</p>
@@ -171,8 +170,7 @@
                 </div>
                 <div class="col-lg-6">
                     <form id="newsletterForm" class="d-flex gap-2">
-                        <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico"
-                            required>
+                        <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico" required>
                         <button type="submit" class="btn btn-light">Suscribirse</button>
                     </form>
                 </div>
