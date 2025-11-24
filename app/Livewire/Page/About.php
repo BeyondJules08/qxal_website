@@ -9,15 +9,15 @@ use Livewire\WithPagination;
 
 class About extends Component
 {
-        // Para que no se rompa el estilo al cambiar de página
+    // Para que no se rompa el estilo al cambiar de página
     protected $paginationTheme = 'bootstrap';
 
     use WithPagination;
-        public TestimonioForm $form;
-public function updatedPage()
-{
-    $this->dispatch('scrollToTestimonios');
-}
+    public TestimonioForm $form;
+    public function updatedPage()
+    {
+        $this->dispatch('scrollToTestimonios');
+    }
 
     public function save()
     {
@@ -30,8 +30,8 @@ public function updatedPage()
     }
     public function render()
     {
-        return view('livewire.page.about',[
-            'testimonios' => Testimonio::latest()->paginate(5),
+        return view('livewire.page.about', [
+            'testimonios' => Testimonio::latest()->paginate(6),
         ]);
     }
 }

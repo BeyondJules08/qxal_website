@@ -48,45 +48,54 @@
             <h4 class="mb-3">Escribe un Testimonio</h4>
 
             <div class="mb-3">
-                <label class="form-label">Nombre</label>
-                <input type="text" wire:model="form.name" class="form-control">
+                <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                <input type="text" wire:model="form.name"
+                    class="form-control @error('form.name') is-invalid @enderror" placeholder="Tu nombre completo"
+                    minlength="3" maxlength="20" @input="updateCharCount('tname', 20)">
+                <small class="form-text text-muted char-count" id="count-tname">0/20</small>
                 @error('form.name')
-                    <small class="text-danger">{{ $message }}</small>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Rol</label>
-                <input type="text" wire:model="form.role" class="form-control">
+                <label class="form-label">Rol/Profesión <span class="text-danger">*</span></label>
+                <input type="text" wire:model="form.role"
+                    class="form-control @error('form.role') is-invalid @enderror" placeholder="Tu rol o profesión"
+                    minlength="3" maxlength="20" @input="updateCharCount('trole', 20)">
+                <small class="form-text text-muted char-count" id="count-trole">0/20</small>
                 @error('form.role')
-                    <small class="text-danger">{{ $message }}</small>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Comentario</label>
-                <textarea wire:model="form.text" class="form-control" rows="3"></textarea>
+                <label class="form-label">Comentario <span class="text-danger">*</span></label>
+                <textarea wire:model="form.text" class="form-control @error('form.text') is-invalid @enderror" rows="3"
+                    placeholder="Tu comentario (mínimo 10, máximo 50 caracteres)" minlength="10" maxlength="50"
+                    @input="updateCharCount('ttext', 50)"></textarea>
+                <small class="form-text text-muted char-count" id="count-ttext">0/50</small>
                 @error('form.text')
-                    <small class="text-danger">{{ $message }}</small>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Estrellas</label>
-                <select wire:model="form.rating" class="form-select">
-                    <option value="">Selecciona</option>
-                    <option value="1">1 ⭐</option>
-                    <option value="2">2 ⭐⭐</option>
-                    <option value="3">3 ⭐⭐⭐</option>
-                    <option value="4">4 ⭐⭐⭐⭐</option>
-                    <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                <label class="form-label">Calificación <span class="text-danger">*</span></label>
+                <select wire:model="form.rating" class="form-select @error('form.rating') is-invalid @enderror">
+                    <option value="">-- Selecciona una calificación --</option>
+                    <option value="1">1 ⭐ (Muy Malo)</option>
+                    <option value="2">2 ⭐⭐ (Malo)</option>
+                    <option value="3">3 ⭐⭐⭐ (Bueno)</option>
+                    <option value="4">4 ⭐⭐⭐⭐ (Muy Bueno)</option>
+                    <option value="5">5 ⭐⭐⭐⭐⭐ (Excelente)</option>
                 </select>
                 @error('form.rating')
-                    <small class="text-danger">{{ $message }}</small>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
-            <button class="btn btn-primary w-100">Enviar</button>
+            <button class="btn btn-primary w-100">Enviar Testimonio</button>
         </form>
 
 
@@ -131,11 +140,91 @@
 
     </div>
     <script>
-        window.addEventListener('scrollToTestimonios', () => {
-            document.getElementById('testimonios').scrollIntoView({
-                behavior: 'smooth'
+        function updateCharCount(fieldName, maxChars) {
+            const fieldMap = {
+                tname: 'form.name',
+                trole: 'form.role',
+                ttext: 'form.text'
+            };
+
+            const element = document.querySelector(`[wire\\:model="${fieldMap[fieldName]}"]`);
+            const countDisplay = document.getElementById(`count-${fieldName}`);
+
+            if (element && countDisplay) {
+                const currentLength = element.value.length;
+                countDisplay.textContent = `${currentLength}/${maxChars}`;
+
+                // Cambiar color si se aproxima al límite
+                if (currentLength > maxChars * 0.8) {
+                    countDisplay.classList.add('text-warning');
+                    countDisplay.classList.remove('text-muted');
+                } else if (currentLength > maxChars * 0.9) {
+                    countDisplay.classList.add('text-danger');
+                    countDisplay.classList.remove('text-warning', 'text-muted');
+                } else {
+                    countDisplay.classList.remove('text-warning', 'text-danger');
+                    countDisplay.classList.add('text-muted');
+                }
+            }
+        }
+
+        // Inicializar contadores al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['tname', 'trole', 'ttext'];
+            const maxChars = {
+                tname: 20,
+                trole: 20,
+                ttext: 50
+            };
+
+            fields.forEach(field => {
+                const fieldMap = {
+                    tname: 'form.name',
+                    trole: 'form.role',
+                    ttext: 'form.text'
+                };
+                const element = document.querySelector(`[wire\\:model="${fieldMap[field]}"]`);
+                if (element) {
+                    updateCharCount(field, maxChars[field]);
+                }
             });
         });
-    </script>
 
+        // Actualizar contadores cuando Livewire actualiza los datos
+        document.addEventListener('livewire:updated', function() {
+            const fields = ['tname', 'trole', 'ttext'];
+            const maxChars = {
+                tname: 20,
+                trole: 20,
+                ttext: 50
+            };
+
+            fields.forEach(field => {
+                const fieldMap = {
+                    tname: 'form.name',
+                    trole: 'form.role',
+                    ttext: 'form.text'
+                };
+                const element = document.querySelector(`[wire\\:model="${fieldMap[field]}"]`);
+                if (element) {
+                    updateCharCount(field, maxChars[field]);
+                }
+            });
+        });
+document.addEventListener('livewire:load', () => {
+    // Scroll al cargar la página si hay hash
+    if (window.location.hash === "#testimonios") {
+        document.getElementById("testimonios").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Scroll al cambiar de página en Livewire
+    window.addEventListener('scrollToTestimonios', () => {
+        const section = document.getElementById("testimonios");
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
+    });
+});
+
+    </script>
 </div>

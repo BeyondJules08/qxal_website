@@ -1,0 +1,111 @@
+BackEnd (Base de datos + ORM + validaciones del servidor)
+
+Contenido:
+
+• ¿Qué BD se usa?
+- Laravel usa la conexión definida por la variable de entorno DB_CONNECTION (archivo config/database.php).
+- En este proyecto la configuración por defecto en config/database.php toma env('DB_CONNECTION', 'sqlite'), por lo que si no hay una variable de entorno definida el proyecto cae en SQLite (archivo local).
+- En entornos de desarrollo/producción habituales se suele usar MySQL o PostgreSQL; la app ya tiene conexiones configuradas para mysql, pgsql, sqlite, sqlsrv.
+- Para saber cuál se está usando en una instalación concreta, revisar el .env (clave DB_CONNECTION) o el archivo config/database.php.
+
+• ¿Qué es un ORM?
+- ORM = Object-Relational Mapping. Es una capa que permite trabajar con la base de datos mediante objetos del lenguaje en lugar de consultas SQL crudas.
+- Ventajas: modelos como objetos, relaciones definidas en código, consultas legibles, protección frente a inyección SQL cuando se usan correctamente.
+
+o Eloquent (Laravel)
+- Eloquent es el ORM nativo de Laravel. Cada tabla suele corresponder a un "Model" (por ejemplo App\Models\Testimonio).
+- Los modelos en este proyecto se encuentran en app/Models/ y representan las tablas del proyecto.
+- Eloquent permite operaciones CRUD sencillas: Model::create([...]), Model::find($id), relaciones (hasMany, belongsTo, etc.), scopes, mutators/accessors y casting.
+
+• Mostrar tablas del proyecto (migraciones disponibles)
+- Migrations en database/migrations/ (archivos que crean/definen tablas):
+  - 0001_01_01_000000_create_users_table.php  -> tabla users
+  - 0001_01_01_000001_create_cache_table.php  -> tabla cache
+  - 0001_01_01_000002_create_jobs_table.php   -> tabla jobs
+  - 2025_11_21_201127_create_caracteristicas_table.php -> tabla caracteristicas
+  - 2025_11_21_201217_create_testimonios_table.php    -> tabla testimonios
+  - 2025_11_21_202019_create_estadisticas_table.php   -> tabla estadisticas
+  - 2025_11_23_035328_create_contact_messages_table.php -> tabla contact_messages
+
+- Modelos asociados (ruta app/Models/):
+  - Caracteristica.php  (tabla caracteristicas)
+  - Testimonio.php     (tabla testimonios)
+  - Estadistica.php    (tabla estadisticas)
+  - ContactMessage.php (tabla contact_messages)
+  - User.php           (tabla users)
+
+• Validaciones del lado del servidor:
+- Regla general: validar siempre en el servidor (no confiar únicamente en validación frontend).
+- En este proyecto las validaciones server-side están implementadas principalmente en formularios Livewire (clases en app/Livewire/Forms/):
+  - app/Livewire/Forms/ContacForm.php  (formulario de contacto)
+  - app/Livewire/Forms/TestimonioForm.php (formulario de testimonios)
+
+- Reglas en los controladores / formularios (ejemplos resumidos):
+  - Contacto (ContacForm):
+    - name: required, string, min:3, max:50, regex para caracteres permitidos
+    - email: required, email, max:50
+    - subject: required, string, min:5, max:20
+    - message: required, string, min:10, max:90
+  - Testimonios (TestimonioForm):
+    - name: required, string, min:3, max:20
+    - role: required, string, min:3, max:20
+    - text: required, string, min:10, max:50
+    - rating: required, integer, min:1, max:5
+
+- Mensajes y manejo de errores enviados al usuario:
+  - En las clases Livewire se define un array messages() con mensajes personalizados en español. Ejemplos:
+    - 'name.required' => 'El nombre es obligatorio.'
+    - 'text.max' => 'El comentario no puede exceder 50 caracteres.'
+  - Flujo de validación:
+    1. En el método del formulario se llama a $this->validate() (Livewire/Laravel). Si falla, Laravel lanza una ValidationException.
+    2. Livewire captura el error y lo expone al frontend; en las vistas Blade se usan directivas @error('form.field') para mostrar el mensaje al usuario (se muestran los mensajes definidos en messages()).
+    3. Si la validación pasa, el controlador/form guarda el registro con Model::create([...]) y normalmente hace session()->flash('success', '...') para confirmar al usuario.
+
+- Ejemplo compacto de validación (presentación):
+  - Regla (en código):
+     'text' => 'required|string|min:10|max:50|not_regex:/^\s+$/' 
+  - Mensaje personalizado (en messages()):
+     'text.max' => 'El comentario no puede exceder 50 caracteres.' 
+  - Resultado para el usuario: Blade/Livewire mostrará el mensaje en la vista justo debajo del campo (p. ej. @error('form.text') <div class="text-danger">{{ $message }}</div> @enderror).
+
+• Dónde revisar/editar estas validaciones:
+- Reglas y mensajes: app/Livewire/Forms/ContacForm.php y app/Livewire/Forms/TestimonioForm.php (clases Livewire/Form)
+- Modelos Eloquent: app/Models/*.php (definición de relaciones, mutators, casts)
+- Migraciones que definen esquema de tablas: database/migrations/*.php
+- Configuración de la BD: config/database.php y .env (variable DB_CONNECTION, DB_DATABASE, DB_HOST, etc.)
+
+• Observaciones y recomendaciones para la presentación:
+- Explicar que el proyecto valida en dos capas: frontend (HTML5 + JS) y backend (Laravel/Eloquent/Livewire). El backend es la capa definitiva y asegura integridad y seguridad.
+- Mencionar que los mensajes están en español y se personalizan en cada formulario para mejorar UX.
+- Si se quiere mostrar ejemplos en la presentación, abrir los archivos indicados (ContacForm.php, TestimonioForm.php) y copiar las reglas y mensajes como evidencia.
+
+---
+
+DIAPOSITIVA 1 — Resumen técnico (BackEnd)
+
+- Título: "Arquitectura BackEnd: BD, ORM y Validaciones"
+- Base de datos: conexión definida por DB_CONNECTION (config/database.php). Por defecto usa sqlite si no hay .env configurado; también disponible mysql, pgsql, sqlsrv.
+- ORM: usamos Eloquent (Laravel). Los modelos están en app/Models/ y representan las tablas; operaciones CRUD con Model::create, find, relaciones (hasMany, belongsTo), etc.
+- Tablas clave del proyecto: users, caracteristicas, testimonios, estadisticas, contact_messages (ver database/migrations/).
+- Validaciones server-side: reglas definidas en formularios Livewire (app/Livewire/Forms/ContacForm.php, TestimonioForm.php) con límites y mensajes en español (ej.: name, email, subject, message, rating).
+
+DIAPOSITIVA 2 — Demo y puntos clave
+
+- Mostrar migraciones y modelos: abrir database/migrations/* y app/Models/* para evidenciar esquema y mapping.
+- Flujo de validación: enviar formulario → $this->validate() → errores mostrados en Blade/Livewire (@error('form.field')) → Model::create() si pasa.
+- Validaciones importantes a destacar: límites de caracteres (evitan romper diseño), sanitización (trim, lowercase email), regex para caracteres permitidos y verificación post-trimming.
+- Seguridad y buenas prácticas: validar en backend siempre, evitar inyección SQL usando Eloquent, mensajes claros para buena UX.
+
+TEXTO PARA PRESENTADOR (PRIMERA PERSONA)
+
+"Hola, soy [tu nombre]. En esta presentación voy a explicar brevemente la parte de backend del proyecto.
+ Les mostraré qué base de datos usamos, cómo mapeamos las tablas con Eloquent y dónde están definidas
+ las validaciones del servidor. También haré una pequeña demo para que vean el flujo: envío
+  de un formulario, cómo se validan los datos y cómo se guardan en la base de datos.
+  El objetivo es que entiendan cómo aseguramos la integridad de los datos y la
+ experiencia de usuario mediante mensajes claros en español."
+
+---
+
+Fin del fichero.
+(Archivo creado automáticamente: BACKEND_DESCRIPCION_PROYECTO.txt)
