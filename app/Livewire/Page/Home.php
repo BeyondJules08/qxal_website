@@ -13,7 +13,7 @@ class Home extends Component
     {
         return view('livewire.page.home',
             [
-                'estadisticas' => Estadistica::first(),
+                'estadisticas' => Estadistica::first() ?? new Estadistica(['jugadores' => 0, 'escuelas' => 0, 'paises' => 0]),
                 'caracteristicas' => Caracteristica::orderBy('title')->get(),
                 'testimonios'=> Testimonio::orderBy('created_at','DESC')->get(),
             ]
